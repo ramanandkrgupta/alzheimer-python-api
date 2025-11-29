@@ -20,16 +20,25 @@ print("Model loaded!")
 CLASS_NAMES = ['Mild Impairment', 'Moderate Impairment', 'No Impairment', 'Very Mild Impairment']
 
 def prepare_image(img_bytes):
-    # Convert bytes to PIL Image
+    # 1. Open image
     img = Image.open(io.BytesIO(img_bytes))
-    # Resize to match model input (128x128)
+    
+    # 2. FORCE convert to RGB (This fixes the (128,128,1) error)
+    # This ensures even black/white MRIs get 3 channels
+    img = img.convert('RGB') 
+    
+    # 3. Resize to 128x128
     img = img.resize((128, 128))
-    # Convert to array
+    
+    # 4. Convert to array
     img_array = image.img_to_array(img)
-    # Expand dims (1, 128, 128, 3)
+    
+    # 5. Expand dims to (1, 128, 128, 3)
     img_array = np.expand_dims(img_array, axis=0)
-    # Normalize (0-1)
+    
+    # 6. Normalize
     img_array /= 255.0
+    
     return img_array
 
 @app.route('/predict', methods=['POST'])
@@ -60,4 +69,4 @@ def predict():
 
 if __name__ == '__main__':
     # Run on port 5000
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)

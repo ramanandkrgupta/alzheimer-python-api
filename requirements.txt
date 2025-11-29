@@ -1,0 +1,11 @@
+Flask
+flask-cors
+
+# for macos
+# tensorflow-macos 
+
+# for windows
+tensorflow==2.15.0 
+
+Pillow
+numpy
